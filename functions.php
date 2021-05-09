@@ -13,7 +13,7 @@ function im_header_decode($string)
 	{
 		foreach($temp_var as $v)
 		{
-			$temp_array[] = $v->text;
+			$temp_array[] = (!preg_match("/^(default|utf\-8)$/ui", $v->charset)) ? mb_convert_encoding($v->text, "UTF-8", $v->charset) : $v->text;
 		}
 	}
 
