@@ -19,18 +19,21 @@ if($connection)
 
 			$pieces = array();
 
-			foreach(["toaddress", "fromaddress", "ccaddress", "bccaddress"] as $v)
+			foreach(["toaddress", "fromaddress", "ccaddress", "bccaddress"] as $k => $v)
 			{
 				if(isset($headers->$v))
 				{
-					$pieces[] = imap_utf8($headers->$v);
+					$pieces[$k] = im_header_decode($headers->$v);
 				}
 			}
-			unset($v);
+			unset($k, $v);
 
 			$data = array();
+
 			$data[0] = (count($pieces) > 0) ? implode(", ", $pieces) : "";
-			$data[1] = imap_utf8($headers->subject);
+			unset($pieces);
+
+			$data[1] = im_header_decode($headers->subject);
 
 			foreach($actions as $v)
 			{
@@ -49,7 +52,7 @@ if($connection)
 				}
 			}
 
-			unset($v, $pieces, $headers, $data);
+			unset($v, $headers, $data);
 		}
 	}
 

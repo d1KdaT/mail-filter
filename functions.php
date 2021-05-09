@@ -4,6 +4,22 @@ function f_matches($a, $b) // a - haystack, b - needle
 	return preg_match("/" . preg_quote($b, '/') . "/ui", $a);
 }
 
+function im_header_decode($string)
+{
+	$temp_var = imap_mime_header_decode($string);
+	$temp_array = array();
+
+	if($temp_var)
+	{
+		foreach($temp_var as $v)
+		{
+			$temp_array[] = $v->text;
+		}
+	}
+
+	return ((count($temp_array) > 0) ? preg_replace("/\s+/", " ", implode("", $temp_array)) : "");
+}
+
 function tg_api($method, array $query = array())
 {
 	foreach($query as $param => $value)
