@@ -7,7 +7,9 @@ $connection = imap_open("{" . IMAP_HOST . ":993/imap/ssl}", USERNAME, PASSWORD, 
 
 if($connection)
 {
-	$messages_ids = imap_search($connection, "UNSEEN");
+	$date_search = date("d-M-Y", time() - 60 * 60 * 24 * 7);
+	$messages_ids = imap_search($connection, "SINCE " . $date_search);
+	unset($date_search);
 
 	if(isset($messages_ids) && is_array($messages_ids) && count($messages_ids) > 0)
 	{
