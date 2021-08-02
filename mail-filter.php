@@ -3,7 +3,7 @@ require_once("config.php");
 require_once("functions.php");
 require_once("actions.php");
 
-$connection = imap_open("{" . IMAP_HOST . ":993/imap/ssl}", USERNAME, PASSWORD, 0, 3, ['DISABLE_AUTHENTICATOR' => 'GSSAPI', 'NTLM']);
+$connection = imap_open("{" . IMAP_HOST . ":993/imap/ssl}", USERNAME, PASSWORD, 0, 3, IMAP_OPTIONS);
 
 if($connection)
 {
