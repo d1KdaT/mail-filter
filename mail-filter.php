@@ -3,6 +3,7 @@ require_once("config.php");
 require_once("functions.php");
 require_once("actions.php");
 
+$messages = array();
 $connection = imap_open("{" . IMAP_HOST . ":993/imap/ssl" . ((defined("CHECK_CERT") && !CHECK_CERT) ? "/novalidate-cert" : "") . "}", USERNAME, PASSWORD, 0, 3, IMAP_OPTIONS);
 
 if($connection)
@@ -13,8 +14,6 @@ if($connection)
 
 	if(isset($messages_ids) && is_array($messages_ids) && count($messages_ids) > 0)
 	{
-		$messages = array();
-
 		foreach($messages_ids as $id)
 		{
 			$headers = imap_headerinfo($connection, $id);
@@ -61,14 +60,10 @@ if($connection)
 }
 else
 {
-	$message = "Can not connect to IMAP";
+	$messages[] = "Can not connect to IMAP";
 }
 
-if(isset($message))
-{
-	$sendMessage = tg_api("sendMessage", ["chat_id" => CHAT_ID, "text" => $message]);
-}
-elseif(isset($messages) && is_array($messages) && count($messages) > 0)
+if(isset($messages) && is_array($messages) && count($messages) > 0)
 {
 	$sendMessage = tg_api("sendMessage", ["chat_id" => CHAT_ID, "text" => implode("\n", $messages)]);
 }
