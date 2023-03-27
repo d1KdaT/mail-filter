@@ -3,6 +3,21 @@ require_once("config.php");
 require_once("functions.php");
 require_once("actions.php");
 
+define("LOCK_FILE_PATH", __DIR__ . "/.lockfile");
+
+if(file_exists(LOCK_FILE_PATH))
+{
+	if(time() - filemtime(LOCK_FILE_PATH) > 300)
+	{
+		$message_error = "Lockfile exist more than 300 seconds";
+		$sendMessage = tg_api("sendMessage", ["chat_id" => CHAT_ID, "text" => $message_error]);
+	}
+
+	exit(1);
+}
+
+file_put_contents(LOCK_FILE_PATH, "1");
+
 $messages = array();
 $connection = imap_open("{" . IMAP_HOST . ":993/imap/ssl" . ((defined("CHECK_CERT") && !CHECK_CERT) ? "/novalidate-cert" : "") . "}", USERNAME, PASSWORD, 0, 3, IMAP_OPTIONS);
 
@@ -67,3 +82,5 @@ if(isset($messages) && is_array($messages) && count($messages) > 0)
 {
 	$sendMessage = tg_api("sendMessage", ["chat_id" => CHAT_ID, "text" => implode("\n", $messages)]);
 }
+
+unlink(LOCK_FILE_PATH);
