@@ -1,2 +1,4 @@
 actions.php
 config.php
+.lockfile
+logs/
